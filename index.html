@@ -1,0 +1,560 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#11111b">
+<meta name="description" content="ACID Website Solutions business command centre">
+<link rel="manifest" href="manifest.json">
+<title>ACID COMMAND CENTRE</title>
+<style>
+:root {
+  --bg:#101019;--panel:#191925;--panel2:#222232;
+  --lime:#c5ff39;--purple:#a78bfa;--blue:#55c8ff;
+  --pink:#ff75c8;--text:#f5f5fa;--muted:#a3a3b8;
+  --border:#303044;--red:#ff7474;--green:#5ee0a0;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+font-family:Inter,Arial,sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:245px;background:#151520;border-right:1px solid var(--border);
+padding:22px 15px;position:fixed;inset:0 auto 0 0;overflow:auto;z-index:5}
+.brand{display:flex;align-items:center;gap:10px;padding:5px 8px 25px}
+.logo{background:var(--lime);color:#111;padding:10px;border-radius:10px;
+font-weight:1000;font-size:20px}
+.brand strong{font-size:14px;letter-spacing:1px}
+.brand small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+.nav-label{color:#77778d;font-size:10px;font-weight:bold;
+letter-spacing:1.5px;padding:14px 10px 7px}
+.nav button{width:100%;border:0;background:none;color:#b9b9cb;
+padding:11px 12px;border-radius:9px;text-align:left;margin:2px 0;
+font-size:13px}
+.nav button:hover,.nav button.active{background:#29293b;color:var(--lime)}
+.nav button span{display:inline-block;width:27px}
+.sidebar-bottom{border-top:1px solid var(--border);margin-top:20px;padding-top:14px}
+.main{margin-left:245px;width:calc(100% - 245px);padding:27px 32px 60px}
+.topbar{display:flex;justify-content:space-between;align-items:center;
+gap:15px;margin-bottom:28px}
+.topbar h1{font-size:25px;margin:0}
+.topbar p{color:var(--muted);font-size:12px;margin:7px 0 0}
+.status{font-size:11px;color:var(--green);border:1px solid #315b49;
+padding:8px 12px;border-radius:30px}
+h2{font-size:17px;margin:0 0 15px}
+h3{font-size:14px;margin:0 0 10px}
+.muted{color:var(--muted)}
+.small{font-size:11px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--border);
+border-radius:14px;padding:18px;margin-bottom:16px;min-width:0}
+.metric-label{color:var(--muted);font-size:12px}
+.metric-value{font-size:25px;font-weight:800;margin:12px 0 5px}
+.metric-note{font-size:11px;color:var(--muted)}
+.lime{color:var(--lime)}.purple{color:var(--purple)}
+.blue{color:var(--blue)}.pink{color:var(--pink)}
+.green{color:var(--green)}.red{color:var(--red)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--border);border-radius:8px;padding:10px 13px;
+background:var(--panel2);color:var(--text);font-size:12px}
+.btn:hover{border-color:var(--lime)}
+.btn.primary{background:var(--lime);color:#111;border-color:var(--lime);
+font-weight:800}
+.btn.danger{color:var(--red)}
+.btn.smallbtn{padding:6px 9px;font-size:11px}
+.section{display:none}.section.active{display:block}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:600px}
+th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--border);
+font-size:12px}
+th{color:var(--muted);font-weight:600}
+td{color:#e5e5ef}
+.empty{text-align:center;color:var(--muted);padding:30px}
+.tag{display:inline-block;border-radius:30px;padding:5px 9px;
+background:#303044;color:var(--purple);font-size:10px}
+.tag.green{color:var(--green);background:#19372c}
+.tag.yellow{color:var(--lime);background:#33391c}
+.tag.red{color:var(--red);background:#3a2228}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field.full{grid-column:1/-1}
+label{font-size:11px;color:var(--muted)}
+input,select,textarea{width:100%;background:#11111b;border:1px solid var(--border);
+border-radius:8px;padding:11px;color:var(--text);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--lime)}
+textarea{min-height:85px;resize:vertical}
+dialog{background:var(--panel);color:var(--text);border:1px solid var(--border);
+border-radius:15px;width:min(560px,94vw);padding:22px}
+dialog::backdrop{background:#000b;backdrop-filter:blur(4px)}
+dialog h2{margin-bottom:18px}
+dialog form{display:grid;gap:13px}
+.chartbar{height:10px;background:#303044;border-radius:20px;overflow:hidden}
+.chartbar span{display:block;height:100%;background:var(--lime);border-radius:20px}
+.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.quick button{text-align:left;min-height:75px}
+.notice{background:#24243a;border:1px solid #454564;border-radius:10px;
+padding:13px;color:#d6d6e5;font-size:12px;line-height:1.6}
+.mobile-menu{display:none}
+.search{max-width:270px}
+@media(max-width:950px){
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .sidebar{width:205px}.main{margin-left:205px;width:calc(100% - 205px)}
+}
+@media(max-width:650px){
+ .sidebar{display:none;width:250px;box-shadow:10px 0 35px #0008}
+ .sidebar.open{display:block}
+ .main{margin:0;width:100%;padding:18px 14px 45px}
+ .mobile-menu{display:inline-block}
+ .topbar h1{font-size:20px}
+ .grid{grid-template-columns:1fr 1fr;gap:9px}
+ .card{padding:13px}
+ .metric-value{font-size:20px}
+ .form-grid{grid-template-columns:1fr}
+ .field.full{grid-column:auto}
+ .quick{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="logo">A</div>
+    <div><strong>ACID COMMAND</strong><small>BUSINESS CONTROL CENTRE</small></div>
+  </div>
+  <nav class="nav">
+    <div class="nav-label">WORKSPACE</div>
+    <button class="active" data-page="dashboard"><span>▦</span>Dashboard</button>
+    <button data-page="leads"><span>◎</span>Leads & Prospects</button>
+    <button data-page="clients"><span>♙</span>Clients</button>
+    <button data-page="calls"><span>☎</span>Sales Calls</button>
+    <button data-page="projects"><span>▤</span>Projects</button>
+    <button data-page="tasks"><span>✓</span>Tasks & Follow-ups</button>
+    <div class="nav-label">MONEY</div>
+    <button data-page="finance"><span>◈</span>Finance</button>
+    <button data-page="invoices"><span>▧</span>Invoices</button>
+    <div class="nav-label">GROWTH</div>
+    <button data-page="portfolio"><span>▣</span>Portfolio</button>
+    <button data-page="analytics"><span>⌁</span>Analytics</button>
+    <button data-page="assistant"><span>✧</span>Business Assistant</button>
+    <div class="nav-label">SYSTEM</div>
+    <button data-page="backup"><span>⇧</span>Backup & Data</button>
+    <button data-page="settings"><span>⚙</span>Settings</button>
+  </nav>
+  <div class="sidebar-bottom small muted">
+    ACID Website Solutions<br>Local edition · v1.0
+  </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div class="row" style="justify-content:flex-start">
+    <button class="btn mobile-menu" id="menuBtn">☰</button>
+    <div><h1 id="pageTitle">Dashboard</h1>
+    <p id="today"></p></div>
+  </div>
+  <div class="status" id="connection">● Offline-ready</div>
+</header>
+
+<section class="section active" id="dashboard">
+  <div class="row" style="margin-bottom:15px">
+    <div><h2>Business overview</h2><div class="muted small">Your business at a glance.</div></div>
+    <button class="btn primary" onclick="openForm('lead')">+ New lead</button>
+  </div>
+  <div class="grid" id="metrics"></div>
+  <div class="grid" style="grid-template-columns:1.4fr 1fr;margin-top:8px">
+    <div class="card">
+      <h3>Revenue vs expenses</h3>
+      <div id="financeChart"></div>
+    </div>
+    <div class="card">
+      <h3>Project pipeline</h3>
+      <div id="projectSummary"></div>
+    </div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 1fr">
+    <div class="card"><h3>Upcoming tasks</h3><div id="upcoming"></div></div>
+    <div class="card"><h3>Recent activity</h3><div id="activity"></div></div>
+  </div>
+  <div class="card">
+    <h3>Quick actions</h3>
+    <div class="quick">
+      <button class="btn" onclick="openForm('client')">＋ Add client</button>
+      <button class="btn" onclick="openForm('project')">＋ New project</button>
+      <button class="btn" onclick="openForm('transaction')">＋ Record payment</button>
+      <button class="btn" onclick="openForm('invoice')">＋ Create invoice</button>
+      <button class="btn" onclick="openForm('task')">＋ Add task</button>
+      <button class="btn" onclick="go('backup')">⇧ Backup data</button>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="leads">
+  <div class="row"><div><h2>Lead management</h2><p class="muted small">Track potential customers and sales opportunities.</p></div><button class="btn primary" onclick="openForm('lead')">+ Add lead</button></div>
+  <div class="card"><div class="row"><input class="search" id="leadSearch" placeholder="Search leads..." oninput="renderTable('leads')"><span class="muted small" id="leadCount"></span></div><div id="leadTable" class="table-wrap"></div></div>
+</section>
+
+<section class="section" id="clients">
+  <div class="row"><div><h2>Client database</h2><p class="muted small">Manage your customer relationships.</p></div><button class="btn primary" onclick="openForm('client')">+ Add client</button></div>
+  <div class="card"><input class="search" id="clientSearch" placeholder="Search clients..." oninput="renderTable('clients')"><div id="clientTable" class="table-wrap"></div></div>
+</section>
+
+<section class="section" id="calls">
+  <div class="row"><div><h2>Sales calls</h2><p class="muted small">Record conversations and sales outcomes.</p></div><button class="btn primary" onclick="openForm('call')">+ Log call</button></div>
+  <div class="card"><div id="callTable" class="table-wrap"></div></div>
+</section>
+
+<section class="section" id="projects">
+  <div class="row"><div><h2>Project management</h2><p class="muted small">Track website builds and delivery.</p></div><button class="btn primary" onclick="openForm('project')">+ New project</button></div>
+  <div class="card"><div id="projectTable" class="table-wrap"></div></div>
+</section>
+
+<section class="section" id="tasks">
+  <div class="row"><div><h2>Tasks & follow-ups</h2><p class="muted small">Keep deadlines and promises visible.</p></div><button class="btn primary" onclick="openForm('task')">+ New task</button></div>
+  <div class="card"><div id="taskTable" class="table-wrap"></div></div>
+</section>
+
+<section class="section" id="finance">
+  <div class="row"><div><h2>Finance centre</h2><p class="muted small">Record every shilling entering or leaving ACID.</p></div><button class="btn primary" onclick="openForm('transaction')">+ Record transaction</button></div>
+  <div class="grid" id="financeMetrics"></div>
+  <div class="card"><div id="transactionTable" class="table-wrap"></div></div>
+</section>
+
+<section class="section" id="invoices">
+  <div class="row"><div><h2>Invoices</h2><p class="muted small">Create and print customer invoices.</p></div><button class="btn primary" onclick="openForm('invoice')">+ New invoice</button></div>
+  <div class="card"><div id="invoiceTable" class="table-wrap"></div></div>
+</section>
+
+<section class="section" id="portfolio">
+  <div class="row"><div><h2>Portfolio manager</h2><p class="muted small">Keep your website projects and demos organised.</p></div><button class="btn primary" onclick="openForm('portfolio')">+ Add project</button></div>
+  <div class="grid" id="portfolioGrid"></div>
+</section>
+
+<section class="section" id="analytics">
+  <h2>Business analytics</h2>
+  <div class="grid" id="analyticsMetrics"></div>
+  <div class="card"><h3>Lead conversion</h3><div id="conversion"></div></div>
+  <div class="card"><h3>Financial summary</h3><div id="analyticsFinance"></div></div>
+</section>
+
+<section class="section" id="assistant">
+  <h2>ACID Business Assistant</h2>
+  <div class="notice">This first version is a local rule-based assistant. It can analyse your saved business records, calculate useful figures and suggest actions. It is not connected to an AI model and does not send your data anywhere.</div>
+  <div class="card" style="margin-top:15px">
+    <h3>Ask about your business</h3>
+    <div class="actions" style="margin:12px 0">
+      <button class="btn" onclick="askAssistant('summary')">Business summary</button>
+      <button class="btn" onclick="askAssistant('sales')">Sales advice</button>
+      <button class="btn" onclick="askAssistant('money')">Financial health</button>
+      <button class="btn" onclick="askAssistant('tasks')">Priority tasks</button>
+    </div>
+    <div id="assistantAnswer" class="notice">Choose a report above to analyse your local business data.</div>
+  </div>
+</section>
+
+<section class="section" id="backup">
+  <h2>Backup & data management</h2>
+  <div class="notice">Your records are stored in this browser on this device. Clearing browser data, changing browsers or losing the device can remove them. Export backups regularly and store them somewhere safe.</div>
+  <div class="card" style="margin-top:15px">
+    <h3>Backup your business</h3>
+    <p class="muted small">Download a complete JSON backup containing your records.</p>
+    <button class="btn primary" onclick="exportBackup()">Download full backup</button>
+  </div>
+  <div class="card">
+    <h3>Restore a backup</h3>
+    <p class="muted small">Restoring replaces the current local records.</p>
+    <input type="file" id="restoreFile" accept=".json,application/json">
+    <button class="btn" style="margin-top:10px" onclick="restoreBackup()">Restore backup</button>
+  </div>
+  <div class="card">
+    <h3>Export spreadsheet data</h3>
+    <select id="csvType">
+      <option value="leads">Leads</option><option value="clients">Clients</option>
+      <option value="projects">Projects</option><option value="tasks">Tasks</option>
+      <option value="transactions">Transactions</option><option value="invoices">Invoices</option>
+      <option value="calls">Sales calls</option>
+    </select>
+    <button class="btn" onclick="exportCSV()" style="margin-top:10px">Export CSV</button>
+  </div>
+  <div class="card">
+    <h3>Danger zone</h3>
+    <p class="muted small">Permanently erase all ACID data from this browser.</p>
+    <button class="btn danger" onclick="clearAll()">Delete all local data</button>
+  </div>
+</section>
+
+<section class="section" id="settings">
+  <h2>Business settings</h2>
+  <div class="card">
+    <form id="settingsForm" class="form-grid">
+      <div class="field"><label>Business name</label><input name="business" required></div>
+      <div class="field"><label>Business phone</label><input name="phone"></div>
+      <div class="field"><label>WhatsApp number (international format)</label><input name="whatsapp" placeholder="2547XXXXXXXX"></div>
+      <div class="field"><label>Business email</label><input name="email" type="email"></div>
+      <div class="field"><label>Setup fee (KSh)</label><input name="setup" type="number" min="0"></div>
+      <div class="field"><label>Monthly fee (KSh)</label><input name="monthly" type="number" min="0"></div>
+      <div class="field full"><label>Business address / location</label><input name="address"></div>
+      <div class="field full"><button class="btn primary">Save settings</button></div>
+    </form>
+  </div>
+  <div class="card">
+    <h3>Install app</h3>
+    <p class="muted small">Install this PWA from your browser when the install option is available. HTTPS or localhost is required.</p>
+    <button class="btn primary" id="installBtn" disabled>Install ACID app</button>
+  </div>
+  <div class="card">
+    <h3>System information</h3>
+    <div class="small muted" id="systemInfo"></div>
+  </div>
+</section>
+</main>
+</div>
+
+<dialog id="formDialog">
+  <div class="row"><h2 id="formTitle">New record</h2><button class="btn" type="button" onclick="closeForm()">✕</button></div>
+  <form id="recordForm"></form>
+</dialog>
+
+<script>
+const DBKEY="acid_command_centre_v1";
+const blank=()=>({
+ leads:[],clients:[],calls:[],projects:[],tasks:[],
+ transactions:[],invoices:[],portfolio:[],activity:[],
+ settings:{business:"ACID Website Solutions",phone:"",whatsapp:"",
+ email:"",setup:5000,monthly:1500,address:""}
+});
+let db=loadDB();
+function loadDB(){
+ try{return {...blank(),...JSON.parse(localStorage.getItem(DBKEY)||"{}")}}
+ catch(e){return blank()}
+}
+function save(){
+ localStorage.setItem(DBKEY,JSON.stringify(db));
+ renderAll();
+}
+function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function money(v){return "KSh "+Number(v||0).toLocaleString("en-KE",{maximumFractionDigits:2})}
+function date(v){if(!v)return "—";return new Date(v+"T00:00:00").toLocaleDateString("en-KE")}
+function today(){return new Date().toISOString().slice(0,10)}
+function log(message){
+ db.activity.unshift({id:id(),message,date:new Date().toLocaleString()});
+ db.activity=db.activity.slice(0,40);
+}
+function go(page){
+ document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+ document.getElementById(page).classList.add("active");
+ document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+ const names={dashboard:"Dashboard",leads:"Leads & Prospects",clients:"Clients",calls:"Sales Calls",projects:"Projects",tasks:"Tasks & Follow-ups",finance:"Finance Centre",invoices:"Invoices",portfolio:"Portfolio",analytics:"Analytics",assistant:"Business Assistant",backup:"Backup & Data",settings:"Settings"};
+ document.getElementById("pageTitle").textContent=names[page]||page;
+ document.getElementById("sidebar").classList.remove("open");
+ renderAll();
+}
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
+document.getElementById("menuBtn").onclick=()=>document.getElementById("sidebar").classList.toggle("open");
+document.getElementById("today").textContent=new Date().toLocaleDateString("en-KE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+
+function metric(label,value,note,color="lime"){
+ return `<div class="card"><div class="metric-label">${label}</div><div class="metric-value ${color}">${value}</div><div class="metric-note">${note}</div></div>`;
+}
+function total(type){return db.transactions.filter(x=>x.type===type).reduce((s,x)=>s+Number(x.amount||0),0)}
+function renderDashboard(){
+ const income=total("Income"),expense=total("Expense");
+ const outstanding=db.invoices.filter(x=>x.status!=="Paid").reduce((s,x)=>s+Number(x.total||0)-Number(x.paid||0),0);
+ document.getElementById("metrics").innerHTML=
+ metric("Total revenue",money(income),"Recorded income","lime")+
+ metric("Net profit",money(income-expense),"Income minus expenses","green")+
+ metric("Active clients",db.clients.length,"Saved client records","purple")+
+ metric("Outstanding invoices",money(outstanding),"Unpaid invoice balances","pink");
+ const max=Math.max(income,expense,1);
+ document.getElementById("financeChart").innerHTML=`
+ <p class="small muted">Income <b class="lime">${money(income)}</b></p>
+ <div class="chartbar"><span style="width:${income/max*100}%"></span></div>
+ <p class="small muted" style="margin-top:17px">Expenses <b class="pink">${money(expense)}</b></p>
+ <div class="chartbar"><span style="width:${expense/max*100}%;background:var(--pink)"></span></div>`;
+ const statuses=["Planning","In progress","Review","Completed"];
+ document.getElementById("projectSummary").innerHTML=statuses.map(s=>{
+ const n=db.projects.filter(p=>p.status===s).length;
+ return `<div class="row small" style="margin:12px 0"><span>${s}</span><b>${n}</b></div>`;
+ }).join("");
+ const upcoming=db.tasks.filter(t=>t.status!=="Done").sort((a,b)=>(a.due||"").localeCompare(b.due||"")).slice(0,5);
+ document.getElementById("upcoming").innerHTML=upcoming.length?upcoming.map(t=>`<div class="row small" style="padding:9px 0;border-bottom:1px solid var(--border)"><span>${esc(t.title)}</span><span class="muted">${date(t.due)}</span></div>`).join(""):'<div class="empty">No pending tasks.</div>';
+ document.getElementById("activity").innerHTML=db.activity.slice(0,5).map(a=>`<div class="small" style="padding:8px 0;border-bottom:1px solid var(--border)">${esc(a.message)}<div class="muted">${esc(a.date)}</div></div>`).join("")||'<div class="empty">No activity yet.</div>';
+}
+const configs={
+ lead:{title:"Add lead",key:"leads",fields:[["name","Business / contact name","text",1],["phone","Phone number","tel"],["email","Email","email"],["business","Business category","text"],["location","Location","text"],["source","Lead source","select",0,["Google Maps","Referral","Facebook","Instagram","Walk-in","Other"]],["status","Pipeline status","select",0,["New","Contacted","Interested","Quoted","Won","Lost"]],["notes","Notes","textarea"]]},
+ client:{title:"Add client",key:"clients",fields:[["name","Client / business name","text",1],["phone","Phone number","tel"],["email","Email","email"],["business","Business type","text"],["location","Location","text"],["setup","Setup fee (KSh)","number"],["monthly","Monthly fee (KSh)","number"],["status","Client status","select",0,["Active","Pending","Inactive"]],["notes","Notes","textarea"]]},
+ call:{title:"Log sales call",key:"calls",fields:[["contact","Business / contact","text",1],["phone","Phone number","tel"],["date","Call date","date"],["outcome","Outcome","select",0,["No answer","Interested","Callback","Not interested","Meeting booked","Sale"]],["next","Follow-up date","date"],["notes","Call notes","textarea"]]},
+ project:{title:"Create project",key:"projects",fields:[["name","Project name","text",1],["client","Client name","text"],["type","Project type","select",0,["Business website","E-commerce","Landing page","Maintenance","Other"]],["status","Project status","select",0,["Planning","In progress","Review","Completed","On hold"]],["start","Start date","date"],["due","Deadline","date"],["budget","Project value (KSh)","number"],["notes","Project notes","textarea"]]},
+ task:{title:"Add task / follow-up",key:"tasks",fields:[["title","Task title","text",1],["related","Related client / project","text"],["due","Due date","date"],["priority","Priority","select",0,["Low","Normal","High","Urgent"]],["status","Status","select",0,["Pending","In progress","Done"]],["notes","Details","textarea"]]},
+ transaction:{title:"Record transaction",key:"transactions",fields:[["type","Transaction type","select",1,["Income","Expense"]],["amount","Amount (KSh)","number",1],["category","Category","select",0,["Website setup","Monthly subscription","Domain / hosting","Marketing","Transport","Software","Other"]],["description","Description","text",1],["date","Date","date"],["method","Payment method","select",0,["M-Pesa","Cash","Bank","Other"]],["reference","Payment reference (optional)","text"]]},
+ invoice:{title:"Create invoice",key:"invoices",fields:[["number","Invoice number","text",1],["client","Client name","text",1],["phone","Client phone","tel"],["description","Description","textarea",1],["total","Total amount (KSh)","number",1],["paid","Amount paid (KSh)","number"],["due","Due date","date"],["status","Payment status","select",0,["Unpaid","Partially paid","Paid"]]]},
+ portfolio:{title:"Add portfolio item",key:"portfolio",fields:[["name","Project name","text",1],["category","Category","text"],["url","Website URL","url"],["description","Description","textarea"],["status","Project type","select",0,["Demo","Client project","Internal"]]]}
+};
+function openForm(type){
+ const c=configs[type];if(!c)return;
+ document.getElementById("formTitle").textContent=c.title;
+ const form=document.getElementById("recordForm");
+ form.innerHTML=c.fields.map(([name,label,type,required,opts])=>{
+ let el=type==="select"?`<select name="${name}">${opts.map(o=>`<option>${esc(o)}</option>`).join("")}</select>`:
+ type==="textarea"?`<textarea name="${name}"></textarea>`:
+ `<input name="${name}" type="${type}" ${required?"required":""} ${type==="number"?'min="0" step="0.01"':""}>`;
+ return `<div class="field ${type==="textarea"?"full":""}"><label>${label}</label>${el}</div>`;
+ }).join("")+`<div class="actions field full"><button class="btn primary">Save record</button><button type="button" class="btn" onclick="closeForm()">Cancel</button></div>`;
+ if(form.elements.date)form.elements.date.value=today();
+ form.onsubmit=e=>{
+ e.preventDefault();const data=Object.fromEntries(new FormData(form).entries());
+ data.id=id();data.created=today();
+ if(type==="invoice"&&!data.number)data.number="ACID-"+Date.now().toString().slice(-6);
+ if(type==="invoice"&&Number(data.paid)>=Number(data.total))data.status="Paid";
+ db[c.key].unshift(data);log(c.title+" saved: "+(data.name||data.title||data.number||data.description||"record"));
+ save();closeForm();
+ };
+ document.getElementById("formDialog").showModal();
+}
+function closeForm(){document.getElementById("formDialog").close()}
+function removeRecord(key,recordId){
+ if(!confirm("Delete this record permanently from this device?"))return;
+ db[key]=db[key].filter(x=>x.id!==recordId);log("Deleted a "+key+" record");save();
+}
+function editStatus(key,recordId,field,value){
+ const x=db[key].find(r=>r.id===recordId);if(!x)return;
+ x[field]=value;log("Updated "+key+" status");save();
+}
+function table(headers,rows){
+ if(!rows.length)return '<div class="empty">No records yet. Add your first record to get started.</div>';
+ return `<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}<th>Action</th></tr></thead><tbody>${rows.join("")}</tbody></table>`;
+}
+function actions(key,x){return `<button class="btn smallbtn danger" onclick="removeRecord('${key}','${x.id}')">Delete</button>`}
+function renderTable(which){
+ if(which==="leads"){
+ const q=(document.getElementById("leadSearch")?.value||"").toLowerCase();
+ const arr=db.leads.filter(x=>JSON.stringify(x).toLowerCase().includes(q));
+ document.getElementById("leadCount").textContent=arr.length+" leads";
+ document.getElementById("leadTable").innerHTML=table(["Business","Phone","Category","Source","Status"],arr.map(x=>`<tr><td>${esc(x.name)}</td><td>${esc(x.phone)}</td><td>${esc(x.business)}</td><td>${esc(x.source)}</td><td><select onchange="editStatus('leads','${x.id}','status',this.value)">${["New","Contacted","Interested","Quoted","Won","Lost"].map(s=>`<option ${x.status===s?"selected":""}>${s}</option>`).join("")}</select></td><td>${actions("leads",x)}</td></tr>`));}
+ if(which==="clients"){
+ const q=(document.getElementById("clientSearch")?.value||"").toLowerCase();
+ const arr=db.clients.filter(x=>JSON.stringify(x).toLowerCase().includes(q));
+ document.getElementById("clientTable").innerHTML=table(["Client","Phone","Location","Setup","Monthly","Status"],arr.map(x=>`<tr><td>${esc(x.name)}</td><td>${esc(x.phone)}</td><td>${esc(x.location)}</td><td>${money(x.setup)}</td><td>${money(x.monthly)}</td><td><span class="tag green">${esc(x.status)}</span></td><td>${actions("clients",x)}</td></tr>`));}
+ if(which==="calls")document.getElementById("callTable").innerHTML=table(["Contact","Phone","Date","Outcome","Follow-up","Notes"],db.calls.map(x=>`<tr><td>${esc(x.contact)}</td><td>${esc(x.phone)}</td><td>${date(x.date)}</td><td>${esc(x.outcome)}</td><td>${date(x.next)}</td><td>${esc(x.notes)}</td><td>${actions("calls",x)}</td></tr>`));
+ if(which==="projects")document.getElementById("projectTable").innerHTML=table(["Project","Client","Type","Status","Deadline","Value"],db.projects.map(x=>`<tr><td>${esc(x.name)}</td><td>${esc(x.client)}</td><td>${esc(x.type)}</td><td><select onchange="editStatus('projects','${x.id}','status',this.value)">${["Planning","In progress","Review","Completed","On hold"].map(s=>`<option ${x.status===s?"selected":""}>${s}</option>`).join("")}</select></td><td>${date(x.due)}</td><td>${money(x.budget)}</td><td>${actions("projects",x)}</td></tr>`));
+ if(which==="tasks")document.getElementById("taskTable").innerHTML=table(["Task","Related","Due","Priority","Status"],db.tasks.map(x=>`<tr><td>${esc(x.title)}</td><td>${esc(x.related)}</td><td>${date(x.due)}</td><td>${esc(x.priority)}</td><td><select onchange="editStatus('tasks','${x.id}','status',this.value)">${["Pending","In progress","Done"].map(s=>`<option ${x.status===s?"selected":""}>${s}</option>`).join("")}</select></td><td>${actions("tasks",x)}</td></tr>`));
+ if(which==="transactions")document.getElementById("transactionTable").innerHTML=table(["Type","Amount","Category","Description","Date","Method","Reference"],db.transactions.map(x=>`<tr><td>${esc(x.type)}</td><td>${money(x.amount)}</td><td>${esc(x.category)}</td><td>${esc(x.description)}</td><td>${date(x.date)}</td><td>${esc(x.method)}</td><td>${esc(x.reference)}</td><td>${actions("transactions",x)}</td></tr>`));
+ if(which==="invoices")document.getElementById("invoiceTable").innerHTML=table(["Invoice","Client","Description","Total","Paid","Balance","Due","Status"],db.invoices.map(x=>`<tr><td>${esc(x.number)}</td><td>${esc(x.client)}</td><td>${esc(x.description)}</td><td>${money(x.total)}</td><td>${money(x.paid)}</td><td>${money(Number(x.total)-Number(x.paid))}</td><td>${date(x.due)}</td><td><span class="tag ${x.status==="Paid"?"green":"yellow"}">${esc(x.status)}</span></td><td><button class="btn smallbtn" onclick="printInvoice('${x.id}')">Print</button> ${actions("invoices",x)}</td></tr>`));
+}
+function renderFinance(){
+ const income=total("Income"),expense=total("Expense");
+ document.getElementById("financeMetrics").innerHTML=
+ metric("Income",money(income),"Recorded payments","green")+
+ metric("Expenses",money(expense),"Recorded costs","pink")+
+ metric("Net",money(income-expense),"Income less expenses","lime")+
+ metric("Transactions",db.transactions.length,"All records","purple");
+}
+function renderPortfolio(){
+ document.getElementById("portfolioGrid").innerHTML=db.portfolio.map(x=>`<div class="card"><div class="tag">${esc(x.status)}</div><h3 style="margin-top:12px">${esc(x.name)}</h3><p class="muted small">${esc(x.category)}</p><p class="small">${esc(x.description)}</p>${x.url?`<a target="_blank" rel="noopener" href="${esc(x.url)}" class="lime small">Visit website ↗</a>`:""}<div style="margin-top:12px">${actions("portfolio",x)}</div></div>`).join("")||'<div class="empty">Your portfolio is empty.</div>';
+}
+function renderAnalytics(){
+ const won=db.leads.filter(x=>x.status==="Won").length;
+ const conversion=db.leads.length?won/db.leads.length*100:0;
+ document.getElementById("analyticsMetrics").innerHTML=
+ metric("Total leads",db.leads.length,"All prospects","purple")+
+ metric("Won leads",won,"Converted opportunities","green")+
+ metric("Conversion",conversion.toFixed(1)+"%","Won ÷ total leads","lime")+
+ metric("Average project value",money(db.projects.length?db.projects.reduce((s,x)=>s+Number(x.budget||0),0)/db.projects.length:0),"Across saved projects","blue");
+ document.getElementById("conversion").innerHTML=`<div class="chartbar"><span style="width:${conversion}%"></span></div><p class="small muted">${conversion.toFixed(1)}% of recorded leads are marked Won.</p>`;
+ document.getElementById("analyticsFinance").innerHTML=`<p>Revenue: <b class="green">${money(total("Income"))}</b></p><p>Expenses: <b class="pink">${money(total("Expense"))}</b></p><p>Net recorded: <b>${money(total("Income")-total("Expense"))}</b></p>`;
+}
+function renderSettings(){
+ const f=document.getElementById("settingsForm");
+ Object.entries(db.settings).forEach(([k,v])=>{if(f.elements[k])f.elements[k].value=v??""});
+ document.getElementById("systemInfo").textContent="Storage: browser localStorage · Records: "+Object.keys(db).filter(k=>Array.isArray(db[k])).reduce((s,k)=>s+db[k].length,0)+" · App version 1.0";
+}
+document.getElementById("settingsForm").onsubmit=e=>{
+ e.preventDefault();db.settings=Object.fromEntries(new FormData(e.target).entries());
+ db.settings.setup=Number(db.settings.setup);db.settings.monthly=Number(db.settings.monthly);
+ log("Business settings updated");save();alert("Settings saved.");
+};
+function printInvoice(recordId){
+ const x=db.invoices.find(r=>r.id===recordId);if(!x)return;
+ const s=db.settings;const w=window.open("","_blank");
+ if(!w){alert("Allow pop-ups to print invoices.");return}
+ w.document.write(`<html><head><title>${esc(x.number)}</title><style>body{font:15px Arial;padding:45px;color:#222}h1{color:#222}table{width:100%;margin-top:30px;border-collapse:collapse}td{padding:12px;border-bottom:1px solid #ddd}.total{font-size:22px;font-weight:bold}</style></head><body><h1>${esc(s.business)}</h1><p>${esc(s.phone)} · ${esc(s.email)}</p><hr><h2>INVOICE ${esc(x.number)}</h2><p>Bill to: ${esc(x.client)}<br>Phone: ${esc(x.phone)}<br>Due: ${date(x.due)}</p><table><tr><td>${esc(x.description)}</td><td>${money(x.total)}</td></tr><tr><td>Paid</td><td>${money(x.paid)}</td></tr><tr><td class="total">Balance due</td><td class="total">${money(Number(x.total)-Number(x.paid))}</td></tr></table><p>Thank you for choosing ${esc(s.business)}.</p><script>window.onload=()=>window.print()<\/script></body></html>`);
+ w.document.close();
+}
+function askAssistant(type){
+ const income=total("Income"),expense=total("Expense"),open=db.invoices.filter(x=>x.status!=="Paid");
+ let msg="";
+ if(type==="summary")msg=`ACID currently has ${db.leads.length} leads, ${db.clients.length} clients, ${db.projects.length} projects and ${db.tasks.filter(x=>x.status!=="Done").length} unfinished tasks. Recorded income is ${money(income)} and expenses are ${money(expense)}.`;
+ if(type==="sales"){
+ const follow=db.calls.filter(x=>x.next).length;
+ msg=`You have ${db.leads.filter(x=>x.status!=="Won"&&x.status!=="Lost").length} leads still in the pipeline. ${follow} call records have follow-up dates. Prioritise interested leads and callbacks, then record the result of every conversation.`;
+ }
+ if(type==="money")msg=`Recorded revenue: ${money(income)}. Recorded expenses: ${money(expense)}. Net recorded result: ${money(income-expense)}. Outstanding invoice balances: ${money(open.reduce((s,x)=>s+Number(x.total)-Number(x.paid),0))}. These are based only on transactions you entered; they are not verified bank or M-Pesa balances.`;
+ if(type==="tasks"){
+ const pending=db.tasks.filter(x=>x.status!=="Done").sort((a,b)=>(a.due||"").localeCompare(b.due||""));
+ msg=pending.length?`You have ${pending.length} unfinished tasks. First priorities: ${pending.slice(0,5).map(t=>t.title+" (due "+(t.due||"not set")+")").join("; ")}.`:"You have no unfinished tasks recorded. Add follow-ups for any prospects who need another contact.";
+ }
+ document.getElementById("assistantAnswer").textContent=msg;
+}
+function exportBackup(){
+ const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
+ download(blob,"acid-backup-"+today()+".json");
+}
+function exportCSV(){
+ const key=document.getElementById("csvType").value,arr=db[key];
+ if(!arr.length){alert("No records to export.");return}
+ const cols=[...new Set(arr.flatMap(Object.keys))];
+ const csv=[cols.join(","),...arr.map(r=>cols.map(k=>'"'+String(r[k]??"").replace(/"/g,'""')+'"').join(","))].join("\r\n");
+ download(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}),"acid-"+key+"-"+today()+".csv");
+}
+function download(blob,name){
+ const a=document.createElement("a"),url=URL.createObjectURL(blob);
+ a.href=url;a.download=name;a.click();URL.revokeObjectURL(url);
+}
+function restoreBackup(){
+ const file=document.getElementById("restoreFile").files[0];if(!file){alert("Choose a JSON backup first.");return}
+ const reader=new FileReader();
+ reader.onload=()=>{
+ try{
+ const data=JSON.parse(reader.result);
+ const keys=Object.keys(blank());
+ if(!data||!keys.every(k=>k in data))throw Error("Invalid backup");
+ if(!confirm("This replaces all current local records. Continue?"))return;
+ db={...blank(),...data};save();alert("Backup restored.");
+ }catch(e){alert("Could not restore this backup: "+e.message)}
+ };
+ reader.readAsText(file);
+}
+function clearAll(){
+ if(!confirm("This permanently deletes all ACID records from this browser. Continue?"))return;
+ if(!confirm("Final confirmation: have you downloaded a backup?"))return;
+ db=blank();save();alert("Local records deleted.");
+}
+function renderAll(){
+ renderDashboard();renderTable("leads");renderTable("clients");renderTable("calls");
+ renderTable("projects");renderTable("tasks");renderTable("transactions");renderTable("invoices");
+ renderPortfolio();renderFinance();renderAnalytics();renderSettings();
+}
+renderAll();
+
+let installPrompt;
+window.addEventListener("beforeinstallprompt",e=>{
+ e.preventDefault();installPrompt=e;document.getElementById("installBtn").disabled=false;
+});
+document.getElementById("installBtn").onclick=async()=>{
+ if(!installPrompt){alert("Use your browser menu and choose Install app or Add to Home Screen.");return}
+ installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;
+ document.getElementById("installBtn").disabled=true;
+};
+if("serviceWorker" in navigator){
+ window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(console.error));
+}
+document.getElementById("connection").textContent=navigator.onLine?"● Online · Local storage":"● Offline mode";
+window.addEventListener("online",()=>document.getElementById("connection").textContent="● Online · Local storage");
+window.addEventListener("offline",()=>document.getElementById("connection").textContent="● Offline mode");
+</script>
+</body>
+</html>
